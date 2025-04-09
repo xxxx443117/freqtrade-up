@@ -52,7 +52,7 @@ class SurgeReversalShortStrategyV2(IStrategy):
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
 
-        dataframe.dropna(inplace=True)
+        # dataframe.dropna(inplace=True)
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -69,21 +69,22 @@ class SurgeReversalShortStrategyV2(IStrategy):
         cond_volume_confirm = dataframe['volume'] > 1.2 * dataframe['volume_mean']
 
         # 条件3：反转K线形态
-        body = abs(dataframe['close'] - dataframe['open'])
-        range_ = dataframe['high'] - dataframe['low'] + 1e-9
-        upper_wick = dataframe['high'] - dataframe[['open', 'close']].max(axis=1)
-        lower_wick = dataframe[['open', 'close']].min(axis=1) - dataframe['low']
+        # body = abs(dataframe['close'] - dataframe['open'])
+        # range_ = dataframe['high'] - dataframe['low'] + 1e-9
+        # upper_wick = dataframe['high'] - dataframe[['open', 'close']].max(axis=1)
+        # lower_wick = dataframe[['open', 'close']].min(axis=1) - dataframe['low']
 
-        cond_doji = (body / range_ < 0.1)
-        cond_shooting = (upper_wick > 0.6 * range_) & (body < 0.3 * range_)
-        cond_big_red = (dataframe['close'] < dataframe['open'] * 0.95)
-        cond_3_red = (
-            (dataframe['close'] < dataframe['open']) &
-            (dataframe['close'].shift(1) < dataframe['open'].shift(1)) &
-            (dataframe['close'].shift(2) < dataframe['open'].shift(2))
-        )
+        # cond_doji = (body / range_ < 0.1)
+        # cond_shooting = (upper_wick > 0.6 * range_) & (body < 0.3 * range_)
+        # cond_big_red = (dataframe['close'] < dataframe['open'] * 0.95)
+        # cond_3_red = (
+        #     (dataframe['close'] < dataframe['open']) &
+        #     (dataframe['close'].shift(1) < dataframe['open'].shift(1)) &
+        #     (dataframe['close'].shift(2) < dataframe['open'].shift(2))
+        # )
 
-        cond_reversal_candle = cond_doji | cond_shooting | cond_big_red | cond_3_red
+        # cond_reversal_candle = cond_doji | cond_shooting | cond_big_red | cond_3_red
+        cond_reversal_candle = True
 
         # 条件4：动能反转信号（至少满足两个）
         cond_macd_bear = (dataframe['macd'] < dataframe['macd_signal']) & (dataframe['macd'].shift(1) > dataframe['macd_signal'].shift(1))
